@@ -66,41 +66,43 @@ const images = [
 
 const galleryList = document.querySelector(".gallery");
 
+const markUp = images
+  .map(
+    ({ preview, original, description }) =>
+      `<li class="gallery-item">
+  <a class="gallery-link" href="${original}">
+    <img
+      class="gallery-image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+    />
+  </a>
+</li>`
+  )
+  .join("");
 
-const navList = images.map((image) => {
-  const li = document.createElement("li");
-    li.classList.add("gallery-item");
-
-
-    
-    const navLink = document.createElement("a");
-    navLink.href = image.original;
-    navLink.classList.add("gallery-link");
-
-    li.append(navLink);
-
-
-  const img = document.createElement("img");
-  img.classList.add("gallery-image");
-    img.src = image.preview;
-    img.alt = image.description;
-    img.dataset.source = image.original;
-
-    navLink.append(img);
-});
+galleryList.innerHTML = markUp;
 
 galleryList.addEventListener("click", handleClick);
 
-    function handleClick(event) {
-        event.preventDefault();
+function handleClick(event) {
+  event.preventDefault();
 
-        if (!event.target.classList.contains("gallery-image")) {
-            return;
-        }
+  if (event.target.nodeName !== 'IMG') {
+    return;
+  }
 
-        const largeImage = event.target.dataset.source;
+    const original = event.target.dataset.source;
+    const description = event.target.alt;
 
-        console.log(largeImage);
-    }
-
+  const instance = basicLightbox.create(`
+	<div class="modal">
+            <img src="${original}"
+            alt="${description}"/>
+    </div>
+`);
+    instance.show();
     
+ // console.log(original);
+}
